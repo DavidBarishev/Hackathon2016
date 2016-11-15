@@ -21,6 +21,7 @@ class Database:
 			CREATE TABLE 'Users'
 			(
 				'UserCode'		INTEGER PRIMARY KEY AUTOINCREMENT DEFAULT 1,
+				'Password'		TEXT
 				'Permission'	TEXT
 			);
 
@@ -50,15 +51,15 @@ class Database:
 		self._conn.close()
 
 
-	def addStudent(self, student_id, firstname, lastname, grade):
+	def _addUser(self, password, permission):
 		"""
-		Adds the student and its info to the database.
-		:params: Student info.
+		Adds a user to the 'Users' table and returns its user code.
+		:return: The new user's code.
 		"""
 		self._db.execute("""
-			INSERT INTO Users (Permission)
-			VALUES ('student')
-		""")
+			INSERT INTO Users (Password, Permission)
+			VALUES ('%s', '%s')
+		""" % (password, permission))
 		self._conn.commit()
 		self._db.execute("""
 			SELECT UserCode
@@ -66,12 +67,32 @@ class Database:
 			ORDER BY UserCode DESC
 			LIMIT 1
 		""")
-		usercode = self._db.fetchone()[0]
+		return self._db.fetchone()[0]
 
+
+	def addStudent(self, student_id, password, firstname, lastname, grade):
+		"""
+		Adds the student and its info to the database.
+		:params: Student info.
+		"""
+		usercode = self._addUser(password, 'student')
 		self._db.execute("""
 			INSERT INTO Students (UserCode, StudentID, FirstName, LastName, Grade)
 			VALUES (%d, %d, '%s', '%s', %d)
 		""" % (usercode, student_id, firstname, lastname, grade))
+		self._conn.commit()
+
+
+	def addCompany(self, company_id, password, name):
+		"""
+		Adds the company and its info to the database.
+		:params: The company's info.
+		"""
+		usercode = self._addUser(password, 'company')
+		self._db.execute("""
+			INSERT INTO Companies (UserCode, CompanyID, Name)
+			VALUES (%d, %d, '%s')
+		""" % (usercode, company_id, name))
 		self._conn.commit()
 
 
