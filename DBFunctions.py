@@ -13,15 +13,15 @@ class Database:
 		self._conn = sqlite3.connect(self._path)   # connect to the database
 		self._db = self._conn.cursor()
 		if create:
-			self.createDB()
+			self.create_db()
 
-	def createDB(self):
+	def create_db(self):
 		""" Creates a new database. """
 		self._db.executescript("""
 			CREATE TABLE 'Users'
 			(
 				'UserCode'		INTEGER PRIMARY KEY AUTOINCREMENT DEFAULT 1,
-				'Password'		TEXT
+				'Password'		TEXT,
 				'Permission'	TEXT
 			);
 
@@ -33,7 +33,7 @@ class Database:
 				'LastName'		TEXT,
 				'Grade'			TINYINT,
 				'MinsDone'		INT DEFAULT 0,
-				'CompanyID'		BIGINT DEFAULT NULL REFERENCES 'Companies' ('CompanyID')
+				'CompanyID'		BIGINT REFERENCES 'Companies' ('CompanyID')
 			);
 
 			CREATE TABLE 'Companies'
@@ -70,16 +70,16 @@ class Database:
 		return self._db.fetchone()[0]
 
 
-	def add_student(self, student_id, password, firstname, lastname, grade):
+	def add_student(self, student_id, password, firstname, lastname, grade, company_id=None):
 		"""
 		Adds the student and its info to the database.
 		:params: Student info.
 		"""
 		usercode = self._add_user(password, 'student')
 		self._db.execute("""
-			INSERT INTO Students (UserCode, StudentID, FirstName, LastName, Grade)
-			VALUES (%d, %d, '%s', '%s', %d)
-		""" % (usercode, student_id, firstname, lastname, grade))
+			INSERT INTO Students (UserCode, StudentID, FirstName, LastName, Grade, CompanyID)
+			VALUES (%d, %d, '%s', '%s', %d, %d)
+		""" % (usercode, student_id, firstname, lastname, grade, company_id))
 		self._conn.commit()
 
 
@@ -96,7 +96,7 @@ class Database:
 		self._conn.commit()
 
 
-	def mins_done(self, student_id):
+	def get_mins_done(self, student_id):
 		"""
 		This function returns the amount of minutes student has done.
 		:param student_id: (INT) Student's ID.
@@ -109,7 +109,7 @@ class Database:
 		""" % student_id)
 
 
-	def add_mins(self, student_id, mins):
+	def add_mins_done(self, student_id, mins):
 		"""
 		This function adds minutes to the student's minutes done.
 		:param student_id: (INT) Student's ID.
@@ -122,3 +122,16 @@ class Database:
 		""" % (mins, student_id))
 		self._conn.commit()
 
+
+	def get_volunteers_of_company(self, company_id):
+		"""
+		This function returns all the students that volunteer at a given company.
+		:param company_id: (INT) Company's ID
+		:return: A list of tuples containing the Student's ID and name. (ID, first name, last name)
+		"""
+		self._db.execute("""
+			SELECT StudentID, FirstName, LastName
+			FROM Students
+			WHERE CompanyID = %d
+		""" % company_id)
+		return self._db.fetchall()
