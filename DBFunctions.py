@@ -135,3 +135,58 @@ class Database:
 			WHERE CompanyID = %d
 		""" % company_id)
 		return self._db.fetchall()
+
+
+	def check_credentials(self, user_id, password, permission):
+		"""
+		Check if the StudentID or CompanyID and password are correct.
+		:param user_id: StudentID or CompanyID.
+		:param password: User's password.
+		:param permission: The user's permission.
+		:return: Return True/False - if the ID and Password are correct.
+		"""
+		# check if the student's ID is valid
+		if permission == "student":
+			self._db.execute("""
+				SELECT UserCode
+				FROM Students
+				WHERE StudentID = %d
+			""" % user_id)
+
+		# check if the company's ID is valid
+		elif permission == "company":
+			self._db.execute("""
+				SELECT UserCode
+				FROM Companies
+				WHERE CompanyID = %d
+			""" % user_id)
+
+		temp = self._db.fetchone()
+		usercode = temp[0] if temp else False
+		if usercode:
+			self._db.execute("""
+				SELECT UserCode
+				FROM Users
+				WHERE UserCode = %d AND Password = '%s'
+			""" % (usercode, password))
+			if self._db.fetchone(): return True
+
+		return False
+
+
+	def get_student_info(self, student_id):
+		self._db.execute("""
+			SELECT FirstName, LastName, Grade, MinsDone, CompanyID
+			FROM Students
+			WHERE StudentID = %d
+		""" % student_id)
+		return self._db.fetchone()
+
+
+	def get_company_info(self, company_id):
+		self._db.execute("""
+			SELECT Name
+			FROM Companies
+			WHERE CompanyID = %d
+		""" % company_id)
+		return self._db.fetchone()
