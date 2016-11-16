@@ -70,10 +70,15 @@ class Database:
 		return self._db.fetchone()[0]
 
 
-	def add_student(self, student_id, password, firstname, lastname, grade, company_id=None):
+	def add_student(self, student_id, password, firstname, lastname, grade, company_id=0):
 		"""
 		Adds the student and its info to the database.
-		:params: Student info.
+		:param student_id: (INT)
+		:param password: (TEXT)
+		:param firstname: (TEXT)
+		:param lastname: (TEXT)
+		:param grade: (INT)
+		:param company_id: (INT) (DEFAULT = 0)
 		"""
 		usercode = self._add_user(password, 'student')
 		self._db.execute("""
@@ -86,7 +91,9 @@ class Database:
 	def add_company(self, company_id, password, name):
 		"""
 		Adds the company and its info to the database.
-		:params: The company's info.
+		:param company_id: (INT)
+		:param password: (TEXT)
+		:param name: (TEXT)
 		"""
 		usercode = self._add_user(password, 'company')
 		self._db.execute("""
@@ -166,16 +173,36 @@ class Database:
 		usercode = temp[0] if temp else False
 		if usercode:
 			self._db.execute("""
-				SELECT UserCode
+				SELECT Password
 				FROM Users
-				WHERE UserCode = %d AND Password = '%s'
-			""" % (usercode, password))
-			if self._db.fetchone(): return True
+				WHERE UserCode = %d
+			""" % usercode)
+			return self._db.fetchone()[0] == password
 
 		return False
 
 
+	def check_student_at_company(self, student_id, company_id):
+		"""
+		This function checks if the student volunteers at the given company.
+		:param student_id: (INT)
+		:param company_id: (INT)
+		:return: If the student volunteers at the given company.
+		"""
+		self._db.execute("""
+			SELECT CompanyID
+			FROM Students
+			WHERE StudentID = %d
+		""" % student_id)
+		return self._db.fetchone()[0] == company_id
+
+
 	def get_student_info(self, student_id):
+		"""
+		This function returns info about the student.
+		:param student_id: (INT)
+		:return: (first name, last name, grade, mins done, company ID)
+		"""
 		self._db.execute("""
 			SELECT FirstName, LastName, Grade, MinsDone, CompanyID
 			FROM Students
@@ -185,9 +212,15 @@ class Database:
 
 
 	def get_company_info(self, company_id):
+		"""
+		This function returns info about the company.
+		:param company_id: (INT)
+		:return: (name,)
+		"""
 		self._db.execute("""
 			SELECT Name
 			FROM Companies
 			WHERE CompanyID = %d
 		""" % company_id)
 		return self._db.fetchone()
+
