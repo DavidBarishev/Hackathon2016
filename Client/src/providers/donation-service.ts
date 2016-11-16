@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import {Http, Headers, RequestOptions} from '@angular/http';
 import 'rxjs/add/operator/map';
 
 /*
@@ -10,21 +10,33 @@ import 'rxjs/add/operator/map';
 */
 @Injectable()
 export class APIService {
-  serverUrl:string = 'http://10.10.0.110:8080';
+  serverUrl:string = 'http://192.168.6.1:8080';
   httpClient: Http;
 
   constructor(public http: Http) {
     this.httpClient = http;
   }
 
-  startCharity (id : string){
-    let body = this.jsonToURLEncoded({"username":id});
-    this.httpClient.post('/api/strat_vol',body)
+  startCharity (id : string,companyID:string){
+    let body = JSON.stringify({"user_id":id,"company_id":companyID});
+    return new Promise(resolve => {
+       this.http.post(this.serverUrl + '/api/start_vol',body)
+        .map(res => res.json())
+        .subscribe(data => {
+            return resolve(data['success'] == true);
+        });
+    });
   }
 
   endCharity (id : string){
-    let body = this.jsonToURLEncoded({"username":id});
-    this.httpClient.post(this.serverUrl + '/api/end_vol',body)
+    let body = JSON.stringify({"user_id":id});
+    return new Promise(resolve => {
+       this.http.post(this.serverUrl + '/api/stop_vol',body)
+        .map(res => res.json())
+        .subscribe(data => {
+            return resolve(data['success'] == true);
+        });
+    });
   }
 
   getInfo(id:string){
@@ -37,13 +49,23 @@ export class APIService {
   });
   }
 
+  alive(){
+    return new Promise(resolve => {
+    this.http.get(this.serverUrl)
+      .map(res => res.json())
+      .subscribe(data => {
+        resolve(data);
+      });
+  });
+  }
+
   login(id:string,password:string){
-    let body = this.jsonToURLEncoded({"id":id,"password":password});
+    let body = JSON.stringify({"user_id":id,"password":password});
     return new Promise(resolve => {
        this.http.post(this.serverUrl + '/api/login',body)
         .map(res => res.json())
         .subscribe(data => {
-            return resolve(data['suceess'] == true);
+            return resolve(data['login'] == true);
         });
     });
     

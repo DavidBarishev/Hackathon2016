@@ -2,5 +2,10 @@
   "name": "hackaton",
   "app_id": "",
   "v2": true,
-  "typescript": true
+  "typescript": true,
+  "proxies": [
+    {
+      "path": "http://localhost:8100/",
+      "proxyUrl": "http://10.10.0.31:8080/api/login"
+  }]
 }

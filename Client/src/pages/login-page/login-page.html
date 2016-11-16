@@ -27,7 +27,18 @@
 
   <div padding class="child">
     <button (click)="login()" ion-button round>Login !</button>
-    <button (click)="dummylogin()" ion-button round>Test Login !</button>
+    <button (click)="dummylogin()" ion-button round>Login Test!</button>
   </div>
-  
+
+<ion-list radio-group [(ngModel)]="radioValue" class='p'>
+  <ion-item>
+    <ion-label>Volenteer</ion-label>
+    <ion-radio value="vol"></ion-radio>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Company</ion-label>
+    <ion-radio value="com"></ion-radio>
+  </ion-item>
+</ion-list>
 </ion-content>

@@ -34,26 +34,20 @@ export class HomePage {
     console.log('Home: ' + params.get('id'))
     this.id = params.get('id');
     this.getHours();
+    this.fullname = 'Tom Gringauz'
   }
-
-
-   loadData(){
-     this.updateData([0,60]);
-   }
 
   getHours(){
     this.donationService.getInfo(this.id)
     .then(hours =>{
        this.updateData([hours['mins_done'],hours['minutes_left']])
-       this.fullname = hours['first_name'] +' '+hours['last_name'];
-       
-      
+       this.fullname = hours['first_name'] +' '+hours['last_name'];    
     }); 
   }
 
 updateData(newData){
     let chart = this.chartComp.chart;
-    chart.data.datasets[0].data[0] = [0,60];
+    chart.data.datasets[0].data = newData;
     chart.update()
   }
   
