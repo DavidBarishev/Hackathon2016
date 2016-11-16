@@ -50,12 +50,17 @@ class User_Login(Handler):
 
 class start_vol(Handler):
     def post(self):
-        id = str(self.request.data.get("user_id"))
-        timestamp = time.strftime("%X")
-        currentlyActive[id] = timestamp
-        return {
-                'success':True
-        }
+        db = Database("database.db")
+        if db.check_student_at_company( int(self.request.data.get("user_id") ), int( self.request.data.get("company_id") ) ):
+            id = str(self.request.data.get("user_id"))
+            timestamp = time.strftime("%X")
+            currentlyActive[id] = timestamp
+            db.close()
+            return {
+                    'success':True
+            }
+        db.close()
+        raise HTTP_400("Student does not volunteer here.")
 
 class End_Vol(Handler):
     def post(self):
