@@ -10,7 +10,7 @@ import 'rxjs/add/operator/map';
 */
 @Injectable()
 export class APIService {
-  serverUrl:string = 'http://192.168.6.1:8080';
+  serverUrl:string = 'http://10.10.0.31:8080';
   httpClient: Http;
 
   constructor(public http: Http) {
