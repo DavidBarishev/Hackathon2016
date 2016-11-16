@@ -194,9 +194,7 @@ class Database:
 			FROM Students
 			WHERE StudentID = %d
 		""" % student_id)
-		x = self._db.fetchone()
-		x = x[0]
-		return x == company_id
+		return self._db.fetchone()[0] == company_id
 
 
 	def get_student_info(self, student_id):
