@@ -191,9 +191,3 @@ class Database:
 			WHERE CompanyID = %d
 		""" % company_id)
 		return self._db.fetchone()
-
-
-db = Database("Data.db")
-print db.get_mins_done(23423)
-
-db.close()
