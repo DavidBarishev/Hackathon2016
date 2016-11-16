@@ -6,6 +6,7 @@
 
 <ion-content padding>
   <chart [labels]="labels" [data]="data" type="pie"></chart>
+  <h1>{{fullname}}</h1>
   <button ion-button (click) = "loadData()">Load Data</button>
   <button ion-button (click) = "getID()">Get ID</button>
   <ion-fab right bottom>

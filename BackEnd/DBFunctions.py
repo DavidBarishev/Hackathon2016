@@ -70,7 +70,7 @@ class Database:
 		return self._db.fetchone()[0]
 
 
-	def add_student(self, student_id, password, firstname, lastname, grade, company_id=None):
+	def add_student(self, student_id, password, firstname, lastname, grade, company_id=0):
 		"""
 		Adds the student and its info to the database.
 		:params: Student info.
@@ -192,8 +192,3 @@ class Database:
 		""" % company_id)
 		return self._db.fetchone()
 
-
-db = Database("Data.db")
-print db.get_mins_done(23423)
-
-db.close()

@@ -10,7 +10,7 @@ import 'rxjs/add/operator/map';
 */
 @Injectable()
 export class APIService {
-  serverUrl:string = 'http://localhost:8000';
+  serverUrl:string = 'http://10.10.0.110:8080';
   httpClient: Http;
 
   constructor(public http: Http) {
@@ -27,9 +27,9 @@ export class APIService {
     this.httpClient.post(this.serverUrl + '/api/end_vol',body)
   }
 
-  getHours(id:string){
+  getInfo(id:string){
   return new Promise(resolve => {
-    this.http.get(this.serverUrl + '/api/user_hours/'+id)
+    this.http.get(this.serverUrl + '/api/user_status/'+id)
       .map(res => res.json())
       .subscribe(data => {
         resolve(data);

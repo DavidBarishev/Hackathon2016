@@ -28,6 +28,7 @@ export class HomePage {
     }];
 
     id:string;
+    fullname:string;
 
   constructor(public donationService: APIService,public params:NavParams) {
     console.log('Home: ' + params.get('id'))
@@ -41,8 +42,13 @@ export class HomePage {
    }
 
   getHours(){
-    this.donationService.getHours(this.id)
-    .then(hours =>{ this.updateData(hours)}); 
+    this.donationService.getInfo(this.id)
+    .then(hours =>{
+       this.updateData([hours['mins_done'],hours['minutes_left']])
+       this.fullname = hours['first_name'] +' '+hours['last_name'];
+       
+      
+    }); 
   }
 
 updateData(newData){
