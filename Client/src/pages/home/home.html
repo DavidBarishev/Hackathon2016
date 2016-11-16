@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Home</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <chart [labels]="labels" [data]="data" type="pie"></chart>
+  <button ion-button (click) = "loadData()">Load Data</button>
+  <button ion-button (click) = "getID()">Get ID</button>
+  <ion-fab right bottom>
+    <button ion-fab color="light"><ion-icon name="arrow-dropleft"></ion-icon></button>
+    <ion-fab-list side="left">
+      <button ion-fab><ion-icon name="ios-add-circle-outline"></ion-icon></button>
+      <button ion-fab><ion-icon name="ios-remove-circle-outline"></ion-icon></button>
+      <button ion-fab><ion-icon name="ios-open-outline"></ion-icon></button>
+    </ion-fab-list>
+  </ion-fab>
+</ion-content>
