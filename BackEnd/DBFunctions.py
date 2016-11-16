@@ -107,6 +107,7 @@ class Database:
 			FROM Students
 			WHERE StudentID = %d
 		""" % student_id)
+		return self._db.fetchone()[0]
 
 
 	def add_mins_done(self, student_id, mins):
