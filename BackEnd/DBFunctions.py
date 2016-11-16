@@ -102,7 +102,7 @@ class Database:
 		:param student_id: (INT) Student's ID.
 		:return : (INT) Amount of minutes student has done.
 		"""
-		return self._db.execute("""
+		self._db.execute("""
 			SELECT MinsDone
 			FROM Students
 			WHERE StudentID = %d
@@ -191,3 +191,9 @@ class Database:
 			WHERE CompanyID = %d
 		""" % company_id)
 		return self._db.fetchone()
+
+
+db = Database("Data.db")
+print db.get_mins_done(23423)
+
+db.close()
